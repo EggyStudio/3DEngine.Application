@@ -50,7 +50,7 @@ public sealed class SdlRendererPlugin : IPlugin
         // Initialize Vulkan against SDL window if configured
         var window = app.World.Resource<AppWindow>();
 
-        // ── Debounce state for the expensive higher-level resize ──
+        // -- Debounce state for the expensive higher-level resize --
         // Captured by both the ResizeEvent lambda and the per-frame system lambda.
         bool pendingRendererResize = false;
         long lastResizeTick = 0;
@@ -103,7 +103,7 @@ public sealed class SdlRendererPlugin : IPlugin
                 if (!world.TryGetResource<Renderer>(out var r) || !r.Context.IsInitialized)
                     return;
             
-                // ── Resolve debounced resize ──
+                // -- Resolve debounced resize --
                 if (pendingRendererResize && (Environment.TickCount64 - lastResizeTick) >= ResizeDebounceMs)
                 {
                     pendingRendererResize = false;
