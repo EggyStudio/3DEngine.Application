@@ -44,6 +44,7 @@ public sealed class SdlRendererPlugin : IPlugin
         renderer.AddExtractSystem(new CameraExtract());
         renderer.AddExtractSystem(new MeshMaterialExtract());
         renderer.AddPrepareSystem(new MeshPrepare());
+        renderer.AddPrepareSystem(new TexturePrepare());
         app.World.InsertResource(renderer);
         Logger.Debug("Renderer resource registered with extract and prepare systems.");
 
