@@ -17,21 +17,29 @@ namespace Engine;
 /// <seealso cref="IInputBackend"/>
 public sealed class AppWindowPlugin : IPlugin
 {
+    /// <inheritdoc />
+    /// <remarks>
+    /// Foundational: provides <see cref="AppWindow"/>, <see cref="IMainLoopDriver"/>,
+    /// <see cref="IInputBackend"/>, and (for Vulkan) <see cref="ISurfaceSource"/>. Plugins
+    /// like <c>SdlPlugin</c>, <c>SdlImGuiPlugin</c> and <c>AppExitPlugin</c> read these
+    /// resources, so this plugin sits in the foundation band and consumers don't need to
+    /// declare it via <see cref="IPlugin.Dependencies"/>.
+    /// </remarks>
+    public int Order => PluginOrder.Foundation + 100;
+    
     /// <summary>SDL-backed main loop driver that pumps events via <see cref="AppWindow.Looping"/>.</summary>
     private sealed class SdlMainLoopDriver(AppWindow window) : IMainLoopDriver
     {
         /// <inheritdoc />
         public void Run(Action frameStep)
         {
-            window.Looping((Action)(() => frameStep()));
-            // NOTE: Do NOT destroy the SDL window here - Cleanup-stage systems
-            // (Vulkan, ImGui, WebView) still need the window/surface alive.
+            window.Looping(frameStep);
         }
 
         /// <inheritdoc />
         public void Shutdown()
         {
-            // Called by App.Run() *after* the Cleanup stage, so all GPU
+            // Called by App.Run() after the Cleanup stage, so all GPU
             // resources have been released before the platform window goes away.
             window.Dispose(null);
         }
